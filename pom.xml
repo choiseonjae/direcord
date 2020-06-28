@@ -109,7 +109,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>com.seoulapp.withmap.WithmapApplication</mainClass>
+							<mainClass>com.direcord.DirecordApplication</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DirecoredApplication {
+public class DirecordApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DirecoredApplication.class, args);
+		SpringApplication.run(DirecordApplication.class, args);
 	}
 
 }

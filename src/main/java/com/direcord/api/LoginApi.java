@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.direcord.service.QuickstartSample;
+
 @RequestMapping(value = "/login")
 @RestController()
 public class LoginApi {
@@ -23,6 +25,11 @@ public class LoginApi {
 	
 	@GetMapping("/")
 	public String index() {
+		try {
+			QuickstartSample.callSTT();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return "Test URL";
 	}
 

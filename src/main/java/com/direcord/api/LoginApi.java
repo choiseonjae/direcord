@@ -23,10 +23,20 @@ public class LoginApi {
 		return false;
 	}
 	
-	@GetMapping("/")
-	public String index() {
+	@GetMapping("/wav")
+	public String wav(String fileName) {
 		try {
-			return QuickstartSample.callSTT();
+			return QuickstartSample.callSTTOfWav(fileName);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "FAIL : " + e.getClass().getSimpleName() + " MSG : "+ e.getMessage();
+		}
+	}
+	
+	@GetMapping("/flac")
+	public String flac(String fileName) {
+		try {
+			return QuickstartSample.callSTTOfFlac(fileName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "FAIL : " + e.getClass().getSimpleName() + " MSG : "+ e.getMessage();

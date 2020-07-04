@@ -29,6 +29,7 @@ public class LoginApi {
 			QuickstartSample.callSTT();
 		} catch (Exception e) {
 			e.printStackTrace();
+			return e.getMessage();
 		}
 		return "Test URL";
 	}

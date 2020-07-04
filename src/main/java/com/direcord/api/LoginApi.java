@@ -1,10 +1,11 @@
 package com.direcord.api;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping(value = "/login")
+@RequestMapping(value = "/")
 @RestController()
 public class LoginApi {
 	
@@ -17,11 +18,8 @@ public class LoginApi {
 		return "성공입니다.";
 	}
 	
-	@GetMapping(path = "/singIn")
+	@PostMapping()
 	public boolean signIn() {
-		
-		
-		
 		return false;
 	}
 

@@ -33,7 +33,7 @@ public class QuickstartSample {
 			ByteString audioBytes = ByteString.copyFrom(data);
 
 			// Builds the sync recognize request
-			RecognitionConfig config = RecognitionConfig.newBuilder().setEncoding(AudioEncoding.LINEAR16)
+			RecognitionConfig config = RecognitionConfig.newBuilder().setEncoding(AudioEncoding.FLAC)
 					.setSampleRateHertz(16000).setLanguageCode("en-US").build();
 			RecognitionAudio audio = RecognitionAudio.newBuilder().setContent(audioBytes).build();
 

@@ -23,7 +23,7 @@ public class QuickstartSample {
 		try (SpeechClient speechClient = SpeechClient.create()) {
 
 			// The path to the audio file to transcribe
-			String fileName = "/konan_show.mp3";
+			String fileName = "/konan_show.flac";
 			
 			fileName = QuickstartSample.class.getResource(fileName).getPath();
 

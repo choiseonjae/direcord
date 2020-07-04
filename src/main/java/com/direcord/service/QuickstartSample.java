@@ -18,7 +18,7 @@ import com.google.protobuf.ByteString;
 public class QuickstartSample {
 
 	/** Demonstrates using the Speech API to transcribe an audio file. */
-	public static void callSTT() throws Exception {
+	public static String callSTT() throws Exception {
 		// Instantiates a client
 		try (SpeechClient speechClient = SpeechClient.create()) {
 
@@ -41,13 +41,18 @@ public class QuickstartSample {
 			RecognizeResponse response = speechClient.recognize(config, audio);
 			List<SpeechRecognitionResult> results = response.getResultsList();
 
+			StringBuilder transcription = new StringBuilder();
+			
 			for (SpeechRecognitionResult result : results) {
 				// There can be several alternative transcripts for a given chunk of speech.
 				// Just use the
 				// first (most likely) one here.
 				SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
 				System.out.printf("Transcription: %s%n", alternative.getTranscript());
+				transcription.append(alternative.getTranscript());
 			}
+			
+			return transcription.toString();
 		}
 	}
 }

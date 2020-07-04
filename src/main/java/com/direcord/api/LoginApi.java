@@ -26,12 +26,11 @@ public class LoginApi {
 	@GetMapping("/")
 	public String index() {
 		try {
-			QuickstartSample.callSTT();
+			return QuickstartSample.callSTT();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return e.getMessage();
+			return "FAIL : " + e.getClass().getSimpleName() + " MSG : "+ e.getMessage();
 		}
-		return "Test URL";
 	}
 
 }

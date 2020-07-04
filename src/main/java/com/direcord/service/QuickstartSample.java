@@ -23,7 +23,9 @@ public class QuickstartSample {
 		try (SpeechClient speechClient = SpeechClient.create()) {
 
 			// The path to the audio file to transcribe
-			String fileName = "./resources/audio.raw";
+			String fileName = "/audio.raw";
+			
+			fileName = QuickstartSample.class.getResource(fileName).getPath();
 
 			// Reads the audio file into memory
 			Path path = Paths.get(fileName);

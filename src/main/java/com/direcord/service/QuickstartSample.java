@@ -118,8 +118,13 @@ public class QuickstartSample {
 
 			return speakerWords.toString();
 		} catch (Exception e) {
+			StackTraceElement[] stacks = new Throwable().getStackTrace();
+			String errMsg = "";
+			for(StackTraceElement stack : stacks) {
+				errMsg += stack.getClassName() + "." + stack.getMethodName() + "\n";
+			}
 			
-			return e.getMessage();
+			return errMsg;
 		}
 	}
 

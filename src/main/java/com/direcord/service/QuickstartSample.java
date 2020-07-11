@@ -93,8 +93,8 @@ public class QuickstartSample {
 				System.out.println("2");
 
 				// Configure request to enable Speaker diarization
-				RecognitionConfig config = RecognitionConfig.newBuilder().setEncoding(AudioEncoding.LINEAR16)
-						.setLanguageCode("en-US").setSampleRateHertz(8000)
+				RecognitionConfig config = RecognitionConfig.newBuilder().setEncoding(AudioEncoding.FLAC)
+						.setLanguageCode("en-US").setSampleRateHertz(44100).setAudioChannelCount(2)
 						.setDiarizationConfig(speakerDiarizationConfig).build();
 				
 				System.out.println("3");
@@ -145,13 +145,9 @@ public class QuickstartSample {
 				return speakerWords.toString();
 			}
 		} catch (Exception e) {
-			StackTraceElement[] stacks = new Throwable().getStackTrace();
-			String errMsg = "";
-			for (StackTraceElement stack : stacks) {
-				errMsg += stack.getLineNumber() + " : " + stack.getClassName() + "." + stack.getMethodName() + "\n";
-			}
-
-			return errMsg;
+			e.printStackTrace();
+			return e.getMessage();
+			
 		}
 	}
 

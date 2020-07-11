@@ -1,5 +1,7 @@
 package com.direcord.api;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +12,8 @@ import com.direcord.service.QuickstartSample;
 @RestController()
 public class LoginApi {
 	
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 //	@PostMapping(path = "/", consumes = "multipart/form-data")
 //		public long index(MultipartFile files) {
 //		return files.getSize();//	}
@@ -36,6 +39,7 @@ public class LoginApi {
 	@GetMapping("/flac")
 	public String flac(String fileName) {
 		try {
+			logger.debug("CONVERT FLAC FILE to TEXT START");
 			return QuickstartSample.callSTTOfFlac(fileName);
 		} catch (Exception e) {
 			e.printStackTrace();

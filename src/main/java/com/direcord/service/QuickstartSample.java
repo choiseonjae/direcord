@@ -6,6 +6,9 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.api.gax.longrunning.OperationFuture;
 import com.google.cloud.speech.v1.LongRunningRecognizeMetadata;
 import com.google.cloud.speech.v1.LongRunningRecognizeResponse;
@@ -21,7 +24,10 @@ import com.google.cloud.speech.v1.SpeechRecognitionResult;
 import com.google.cloud.speech.v1.WordInfo;
 import com.google.protobuf.ByteString;
 
+
 public class QuickstartSample {
+	
+	private static final Logger logger = LoggerFactory.getLogger(QuickstartSample.class);
 
 	/** Demonstrates using the Speech API to transcribe an audio file. */
 	public static String callSTTOfWav(String fileName) throws Exception {
@@ -83,9 +89,11 @@ public class QuickstartSample {
 			// Speaker Tags are only included in the last result object, which has only one
 			// alternative.
 			LongRunningRecognizeResponse longRunningRecognizeResponse = response.get();
+			logger.debug("[longRunningRecognizeResponse size] " + longRunningRecognizeResponse.getResultsCount());
 			SpeechRecognitionAlternative alternative = longRunningRecognizeResponse
 					.getResults(longRunningRecognizeResponse.getResultsCount() - 1).getAlternatives(0);
 
+			logger.debug("[wordInfo size] " + alternative.getWordsCount());
 			// The alternative is made up of WordInfo objects that contain the speaker_tag.
 			WordInfo wordInfo = alternative.getWords(0);
 			int currentSpeakerTag = wordInfo.getSpeakerTag();
@@ -110,6 +118,7 @@ public class QuickstartSample {
 
 			return speakerWords.toString();
 		} catch (Exception e) {
+			
 			return e.getMessage();
 		}
 	}

@@ -125,7 +125,6 @@ public class QuickstartSample {
 
 				System.out.println(speakerWords.toString());
 				logger.info("LOGGER INFO 되는지?");
-				logger.info("speakerWords.toString() : " + speakerWords.toString());
 				
 				return speakerWords.toString();
 			}

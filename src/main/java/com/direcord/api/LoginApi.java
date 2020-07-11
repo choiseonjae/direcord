@@ -39,7 +39,7 @@ public class LoginApi {
 	@GetMapping("/flac")
 	public String flac(String fileName) {
 		try {
-			logger.debug("CONVERT FLAC FILE to TEXT START");
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			return QuickstartSample.callDistinguishSpeaker(fileName);
 		} catch (Exception e) {
 			e.printStackTrace();

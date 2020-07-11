@@ -40,7 +40,7 @@ public class LoginApi {
 	public String flac(String fileName) {
 		try {
 			logger.debug("CONVERT FLAC FILE to TEXT START");
-			return QuickstartSample.callSTTOfFlac(fileName);
+			return QuickstartSample.callDistinguishSpeaker(fileName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "FAIL : " + e.getClass().getSimpleName() + " MSG : "+ e.getMessage();

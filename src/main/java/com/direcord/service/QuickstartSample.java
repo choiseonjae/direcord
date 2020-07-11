@@ -9,9 +9,6 @@ import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.api.gax.longrunning.OperationFuture;
-import com.google.cloud.speech.v1.LongRunningRecognizeMetadata;
-import com.google.cloud.speech.v1.LongRunningRecognizeResponse;
 //Imports the Google Cloud client library
 import com.google.cloud.speech.v1.RecognitionAudio;
 import com.google.cloud.speech.v1.RecognitionConfig;
@@ -24,9 +21,8 @@ import com.google.cloud.speech.v1.SpeechRecognitionResult;
 import com.google.cloud.speech.v1.WordInfo;
 import com.google.protobuf.ByteString;
 
-
 public class QuickstartSample {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(QuickstartSample.class);
 
 	/** Demonstrates using the Speech API to transcribe an audio file. */
@@ -74,56 +70,72 @@ public class QuickstartSample {
 		}
 	}
 
-	public static String callDistinguishSpeaker(SpeechClient speechClient, RecognitionConfig config,
-			RecognitionAudio audio) throws InterruptedException, ExecutionException {
+	public static String callDistinguishSpeaker(String fileName) throws InterruptedException, ExecutionException {
 		try {
-			// Use non-blocking call for getting file transcription
-			OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response = speechClient
-					.longRunningRecognizeAsync(config, audio);
+			// The path to the audio file to transcribe
+			fileName = "/" + fileName;
 
-			while (!response.isDone()) {
-				System.out.println("Waiting for response...");
-				Thread.sleep(10000);
-			}
+			fileName = QuickstartSample.class.getResource(fileName).getPath();
+			
+			Path path = Paths.get(fileName);
+			byte[] content = Files.readAllBytes(path);
 
-			// Speaker Tags are only included in the last result object, which has only one
-			// alternative.
-			LongRunningRecognizeResponse longRunningRecognizeResponse = response.get();
-			logger.debug("[longRunningRecognizeResponse size] " + longRunningRecognizeResponse.getResultsCount());
-			SpeechRecognitionAlternative alternative = longRunningRecognizeResponse
-					.getResults(longRunningRecognizeResponse.getResultsCount() - 1).getAlternatives(0);
+			try (SpeechClient speechClient = SpeechClient.create()) {
+				// Get the contents of the local audio file
+				RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder()
+						.setContent(ByteString.copyFrom(content)).build();
 
-			logger.debug("[wordInfo size] " + alternative.getWordsCount());
-			// The alternative is made up of WordInfo objects that contain the speaker_tag.
-			WordInfo wordInfo = alternative.getWords(0);
-			int currentSpeakerTag = wordInfo.getSpeakerTag();
+				SpeakerDiarizationConfig speakerDiarizationConfig = SpeakerDiarizationConfig.newBuilder()
+						.setEnableSpeakerDiarization(true).setMinSpeakerCount(2).setMaxSpeakerCount(2).build();
 
-			// For each word, get all the words associated with one speaker, once the
-			// speaker changes,
-			// add a new line with the new speaker and their spoken words.
-			StringBuilder speakerWords = new StringBuilder(
-					String.format("Speaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
+				// Configure request to enable Speaker diarization
+				RecognitionConfig config = RecognitionConfig.newBuilder().setEncoding(AudioEncoding.LINEAR16)
+						.setLanguageCode("en-US").setSampleRateHertz(8000)
+						.setDiarizationConfig(speakerDiarizationConfig).build();
 
-			for (int i = 1; i < alternative.getWordsCount(); i++) {
-				wordInfo = alternative.getWords(i);
-				if (currentSpeakerTag == wordInfo.getSpeakerTag()) {
-					speakerWords.append(" ");
-					speakerWords.append(wordInfo.getWord());
-				} else {
-					speakerWords
-							.append(String.format("\nSpeaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
-					currentSpeakerTag = wordInfo.getSpeakerTag();
+				// Perform the transcription request
+				RecognizeResponse recognizeResponse = speechClient.recognize(config, recognitionAudio);
+
+				// Speaker Tags are only included in the last result object, which has only one
+				// alternative.
+				SpeechRecognitionAlternative alternative = recognizeResponse
+						.getResults(recognizeResponse.getResultsCount() - 1).getAlternatives(0);
+
+				// The alternative is made up of WordInfo objects that contain the speaker_tag.
+				WordInfo wordInfo = alternative.getWords(0);
+				int currentSpeakerTag = wordInfo.getSpeakerTag();
+
+				// For each word, get all the words associated with one speaker, once the
+				// speaker changes,
+				// add a new line with the new speaker and their spoken words.
+				StringBuilder speakerWords = new StringBuilder(
+						String.format("Speaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
+
+				for (int i = 1; i < alternative.getWordsCount(); i++) {
+					wordInfo = alternative.getWords(i);
+					if (currentSpeakerTag == wordInfo.getSpeakerTag()) {
+						speakerWords.append(" ");
+						speakerWords.append(wordInfo.getWord());
+					} else {
+						speakerWords.append(
+								String.format("\nSpeaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
+						currentSpeakerTag = wordInfo.getSpeakerTag();
+					}
 				}
-			}
 
-			return speakerWords.toString();
+				System.out.println(speakerWords.toString());
+				logger.info("LOGGER INFO 되는지?");
+				logger.info("speakerWords.toString() : " + speakerWords.toString());
+				
+				return speakerWords.toString();
+			}
 		} catch (Exception e) {
 			StackTraceElement[] stacks = new Throwable().getStackTrace();
 			String errMsg = "";
-			for(StackTraceElement stack : stacks) {
+			for (StackTraceElement stack : stacks) {
 				errMsg += stack.getLineNumber() + " : " + stack.getClassName() + "." + stack.getMethodName() + "\n";
 			}
-			
+
 			return errMsg;
 		}
 	}
@@ -148,23 +160,23 @@ public class QuickstartSample {
 					.setSampleRateHertz(44100).setLanguageCode("en-US").setAudioChannelCount(2).build();
 			RecognitionAudio audio = RecognitionAudio.newBuilder().setContent(audioBytes).build();
 
-			return callDistinguishSpeaker(speechClient, config, audio);
-//			// Performs speech recognition on the audio file
-//			RecognizeResponse response = speechClient.recognize(config, audio);
-//			List<SpeechRecognitionResult> results = response.getResultsList();
-//
-//			StringBuilder transcription = new StringBuilder();
-//
-//			for (SpeechRecognitionResult result : results) {
-//				// There can be several alternative transcripts for a given chunk of speech.
-//				// Just use the
-//				// first (most likely) one here.
-//				SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-//				System.out.printf("Transcription: %s%n", alternative.getTranscript());
-//				transcription.append(alternative.getTranscript() + "\n");
-//			}
-//
-//			return transcription.toString();
+			// Performs speech recognition on the audio file
+			RecognizeResponse response = speechClient.recognize(config, audio);
+			List<SpeechRecognitionResult> results = response.getResultsList();
+
+			StringBuilder transcription = new StringBuilder();
+
+			for (SpeechRecognitionResult result : results) {
+				// There can be several alternative transcripts for a given chunk of speech.
+				// Just use the
+				// first (most likely) one here.
+				SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+				System.out.printf("Transcription: %s%n", alternative.getTranscript());
+				transcription.append(alternative.getTranscript() + "\n");
+			}
+
+			return transcription.toString();
 		}
+		
 	}
 }

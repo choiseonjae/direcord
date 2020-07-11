@@ -84,25 +84,41 @@ public class QuickstartSample {
 				// Get the contents of the local audio file
 				RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder()
 						.setContent(ByteString.copyFrom(content)).build();
+				
+				System.out.println("1");
 
 				SpeakerDiarizationConfig speakerDiarizationConfig = SpeakerDiarizationConfig.newBuilder()
 						.setEnableSpeakerDiarization(true).setMinSpeakerCount(2).setMaxSpeakerCount(2).build();
+				
+				System.out.println("2");
 
 				// Configure request to enable Speaker diarization
 				RecognitionConfig config = RecognitionConfig.newBuilder().setEncoding(AudioEncoding.LINEAR16)
 						.setLanguageCode("en-US").setSampleRateHertz(8000)
 						.setDiarizationConfig(speakerDiarizationConfig).build();
+				
+				System.out.println("3");
 
 				// Perform the transcription request
 				RecognizeResponse recognizeResponse = speechClient.recognize(config, recognitionAudio);
+				
+				System.out.println("4");
+				System.out.println("[recognizeResponse size] " + recognizeResponse.getResultsCount());
+				System.out.println("[recognizeResponse getAlternativesCount size] " + recognizeResponse.getResults(recognizeResponse.getResultsCount() - 1).getAlternativesCount());
 
 				// Speaker Tags are only included in the last result object, which has only one
 				// alternative.
 				SpeechRecognitionAlternative alternative = recognizeResponse
 						.getResults(recognizeResponse.getResultsCount() - 1).getAlternatives(0);
+				
+				System.out.println("5");
+				System.out.println("alternative.getWordsCount()] " + alternative.getWordsCount());
 
 				// The alternative is made up of WordInfo objects that contain the speaker_tag.
 				WordInfo wordInfo = alternative.getWords(0);
+				
+				System.out.println("6");
+				
 				int currentSpeakerTag = wordInfo.getSpeakerTag();
 
 				// For each word, get all the words associated with one speaker, once the

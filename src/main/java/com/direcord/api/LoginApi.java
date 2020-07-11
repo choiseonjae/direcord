@@ -39,7 +39,16 @@ public class LoginApi {
 	@GetMapping("/flac")
 	public String flac(String fileName) {
 		try {
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			return QuickstartSample.callSTTOfFlac(fileName);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "FAIL : " + e.getClass().getSimpleName() + " MSG : "+ e.getMessage();
+		}
+	}
+	
+	@GetMapping("/speaker")
+	public String speaker(String fileName) {
+		try {
 			return QuickstartSample.callDistinguishSpeaker(fileName);
 		} catch (Exception e) {
 			e.printStackTrace();

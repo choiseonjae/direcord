@@ -48,64 +48,23 @@ public class QuickstartSample {
 					.setAudioChannelCount(2).build();
 			RecognitionAudio audio = RecognitionAudio.newBuilder().setContent(audioBytes).build();
 			
-			  // Use non-blocking call for getting file transcription
-		    OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
-		        speechClient.longRunningRecognizeAsync(config, audio);
+			// Performs speech recognition on the audio file
+			RecognizeResponse response = speechClient.recognize(config, audio);
 
-		    while (!response.isDone()) {
-		      System.out.println("Waiting for response...");
-		      Thread.sleep(10000);
-		    }
+			List<SpeechRecognitionResult> results = response.getResultsList();
 
-		    // Speaker Tags are only included in the last result object, which has only one alternative.
-		    LongRunningRecognizeResponse longRunningRecognizeResponse = response.get();
-		    SpeechRecognitionAlternative alternative =
-		        longRunningRecognizeResponse
-		            .getResults(longRunningRecognizeResponse.getResultsCount() - 1)
-		            .getAlternatives(0);
+			StringBuilder transcription = new StringBuilder();
 
-		    // The alternative is made up of WordInfo objects that contain the speaker_tag.
-		    WordInfo wordInfo = alternative.getWords(0);
-		    int currentSpeakerTag = wordInfo.getSpeakerTag();
+			for (SpeechRecognitionResult result : results) {
+				// There can be several alternative transcripts for a given chunk of speech.
+				// Just use the
+				// first (most likely) one here.
+				SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+				System.out.printf("Transcription: %s%n", alternative.getTranscript());
+				transcription.append(alternative.getTranscript() + "\n");
+			}
 
-		    // For each word, get all the words associated with one speaker, once the speaker changes,
-		    // add a new line with the new speaker and their spoken words.
-		    StringBuilder speakerWords =
-		        new StringBuilder(
-		            String.format("Speaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
-
-		    for (int i = 1; i < alternative.getWordsCount(); i++) {
-		      wordInfo = alternative.getWords(i);
-		      if (currentSpeakerTag == wordInfo.getSpeakerTag()) {
-		        speakerWords.append(" ");
-		        speakerWords.append(wordInfo.getWord());
-		      } else {
-		        speakerWords.append(
-		            String.format("\nSpeaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
-		        currentSpeakerTag = wordInfo.getSpeakerTag();
-		      }
-		    }
-
-		    return callDistinguishSpeaker(speechClient, config, audio);
-			
-			// TODO 짧은 번역
-//			// Performs speech recognition on the audio file
-//			RecognizeResponse response = speechClient.recognize(config, audio);
-//
-//			List<SpeechRecognitionResult> results = response.getResultsList();
-//
-//			StringBuilder transcription = new StringBuilder();
-//
-//			for (SpeechRecognitionResult result : results) {
-//				// There can be several alternative transcripts for a given chunk of speech.
-//				// Just use the
-//				// first (most likely) one here.
-//				SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-//				System.out.printf("Transcription: %s%n", alternative.getTranscript());
-//				transcription.append(alternative.getTranscript() + "\n");
-//			}
-//
-//			return transcription.toString();
+			return transcription.toString();
 		}
 	}
 	
@@ -171,22 +130,23 @@ public class QuickstartSample {
 					.setSampleRateHertz(44100).setLanguageCode("en-US").setAudioChannelCount(2).build();
 			RecognitionAudio audio = RecognitionAudio.newBuilder().setContent(audioBytes).build();
 
-			// Performs speech recognition on the audio file
-			RecognizeResponse response = speechClient.recognize(config, audio);
-			List<SpeechRecognitionResult> results = response.getResultsList();
-
-			StringBuilder transcription = new StringBuilder();
-
-			for (SpeechRecognitionResult result : results) {
-				// There can be several alternative transcripts for a given chunk of speech.
-				// Just use the
-				// first (most likely) one here.
-				SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-				System.out.printf("Transcription: %s%n", alternative.getTranscript());
-				transcription.append(alternative.getTranscript() + "\n");
-			}
-
-			return transcription.toString();
+			return callDistinguishSpeaker(speechClient, config, audio);
+//			// Performs speech recognition on the audio file
+//			RecognizeResponse response = speechClient.recognize(config, audio);
+//			List<SpeechRecognitionResult> results = response.getResultsList();
+//
+//			StringBuilder transcription = new StringBuilder();
+//
+//			for (SpeechRecognitionResult result : results) {
+//				// There can be several alternative transcripts for a given chunk of speech.
+//				// Just use the
+//				// first (most likely) one here.
+//				SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+//				System.out.printf("Transcription: %s%n", alternative.getTranscript());
+//				transcription.append(alternative.getTranscript() + "\n");
+//			}
+//
+//			return transcription.toString();
 		}
 	}
 }

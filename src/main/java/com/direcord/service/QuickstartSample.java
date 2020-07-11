@@ -47,7 +47,7 @@ public class QuickstartSample {
 					.setSampleRateHertz(16000).setDiarizationConfig(speakerDiarizationConfig).setLanguageCode("en-US")
 					.setAudioChannelCount(2).build();
 			RecognitionAudio audio = RecognitionAudio.newBuilder().setContent(audioBytes).build();
-			
+
 			// Performs speech recognition on the audio file
 			RecognizeResponse response = speechClient.recognize(config, audio);
 
@@ -67,47 +67,51 @@ public class QuickstartSample {
 			return transcription.toString();
 		}
 	}
-	
-	public static String callDistinguishSpeaker(SpeechClient speechClient, RecognitionConfig config, RecognitionAudio audio) throws InterruptedException, ExecutionException {
-		  // Use non-blocking call for getting file transcription
-	    OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response =
-	        speechClient.longRunningRecognizeAsync(config, audio);
 
-	    while (!response.isDone()) {
-	      System.out.println("Waiting for response...");
-	      Thread.sleep(10000);
-	    }
+	public static String callDistinguishSpeaker(SpeechClient speechClient, RecognitionConfig config,
+			RecognitionAudio audio) throws InterruptedException, ExecutionException {
+		try {
+			// Use non-blocking call for getting file transcription
+			OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response = speechClient
+					.longRunningRecognizeAsync(config, audio);
 
-	    // Speaker Tags are only included in the last result object, which has only one alternative.
-	    LongRunningRecognizeResponse longRunningRecognizeResponse = response.get();
-	    SpeechRecognitionAlternative alternative =
-	        longRunningRecognizeResponse
-	            .getResults(longRunningRecognizeResponse.getResultsCount() - 1)
-	            .getAlternatives(0);
+			while (!response.isDone()) {
+				System.out.println("Waiting for response...");
+				Thread.sleep(10000);
+			}
 
-	    // The alternative is made up of WordInfo objects that contain the speaker_tag.
-	    WordInfo wordInfo = alternative.getWords(0);
-	    int currentSpeakerTag = wordInfo.getSpeakerTag();
+			// Speaker Tags are only included in the last result object, which has only one
+			// alternative.
+			LongRunningRecognizeResponse longRunningRecognizeResponse = response.get();
+			SpeechRecognitionAlternative alternative = longRunningRecognizeResponse
+					.getResults(longRunningRecognizeResponse.getResultsCount() - 1).getAlternatives(0);
 
-	    // For each word, get all the words associated with one speaker, once the speaker changes,
-	    // add a new line with the new speaker and their spoken words.
-	    StringBuilder speakerWords =
-	        new StringBuilder(
-	            String.format("Speaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
+			// The alternative is made up of WordInfo objects that contain the speaker_tag.
+			WordInfo wordInfo = alternative.getWords(0);
+			int currentSpeakerTag = wordInfo.getSpeakerTag();
 
-	    for (int i = 1; i < alternative.getWordsCount(); i++) {
-	      wordInfo = alternative.getWords(i);
-	      if (currentSpeakerTag == wordInfo.getSpeakerTag()) {
-	        speakerWords.append(" ");
-	        speakerWords.append(wordInfo.getWord());
-	      } else {
-	        speakerWords.append(
-	            String.format("\nSpeaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
-	        currentSpeakerTag = wordInfo.getSpeakerTag();
-	      }
-	    }
+			// For each word, get all the words associated with one speaker, once the
+			// speaker changes,
+			// add a new line with the new speaker and their spoken words.
+			StringBuilder speakerWords = new StringBuilder(
+					String.format("Speaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
 
-	    return speakerWords.toString();
+			for (int i = 1; i < alternative.getWordsCount(); i++) {
+				wordInfo = alternative.getWords(i);
+				if (currentSpeakerTag == wordInfo.getSpeakerTag()) {
+					speakerWords.append(" ");
+					speakerWords.append(wordInfo.getWord());
+				} else {
+					speakerWords
+							.append(String.format("\nSpeaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
+					currentSpeakerTag = wordInfo.getSpeakerTag();
+				}
+			}
+
+			return speakerWords.toString();
+		} catch (Exception e) {
+			return e.getMessage();
+		}
 	}
 
 	/** Demonstrates using the Speech API to transcribe an audio file. */

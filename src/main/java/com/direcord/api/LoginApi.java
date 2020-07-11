@@ -12,8 +12,8 @@ import com.direcord.service.QuickstartSample;
 @RestController()
 public class LoginApi {
 	
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+	 private static final Logger logger = LoggerFactory.getLogger(LoginApi.class);
+	 
 //	@PostMapping(path = "/", consumes = "multipart/form-data")
 //		public long index(MultipartFile files) {
 //		return files.getSize();//	}

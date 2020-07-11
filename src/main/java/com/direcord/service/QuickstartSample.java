@@ -120,7 +120,9 @@ public class QuickstartSample {
 		} catch (Exception e) {
 			StackTraceElement[] stacks = new Throwable().getStackTrace();
 			String errMsg = "";
+			e.printStackTrace();
 			for(StackTraceElement stack : stacks) {
+				logger.error(stack.getMethodName());
 				errMsg += stack.getClassName() + "." + stack.getMethodName() + "\n";
 			}
 			

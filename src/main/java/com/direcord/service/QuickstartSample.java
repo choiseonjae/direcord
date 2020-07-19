@@ -57,11 +57,14 @@ public class QuickstartSample {
 
 			StringBuilder transcription = new StringBuilder();
 
+			System.out.println("[results size] " + results.size());
 			for (SpeechRecognitionResult result : results) {
 				// There can be several alternative transcripts for a given chunk of speech.
 				// Just use the
 				// first (most likely) one here.
 				SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+				
+				System.out.println("[alternative] " + SpeechRecognitionAlternative.getDescriptor().getName());
 				System.out.printf("Transcription: %s%n", alternative.getTranscript());
 				transcription.append(alternative.getTranscript() + "\n");
 			}
@@ -176,12 +179,14 @@ public class QuickstartSample {
 			List<SpeechRecognitionResult> results = response.getResultsList();
 
 			StringBuilder transcription = new StringBuilder();
-
+			System.out.println("[results size] " + results.size());
 			for (SpeechRecognitionResult result : results) {
 				// There can be several alternative transcripts for a given chunk of speech.
 				// Just use the
 				// first (most likely) one here.
 				SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+				
+				System.out.println("[alternative] " + SpeechRecognitionAlternative.getDescriptor().getName());
 				System.out.printf("Transcription: %s%n", alternative.getTranscript());
 				transcription.append(alternative.getTranscript() + "\n");
 			}

@@ -22,7 +22,7 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 	 * @param fileName the path to an audio file.
 	 */
 	public String analyze(String fileName) throws Exception {
-		Path path = Paths.get(fileName);
+		Path path = Paths.get("./src/main/resources/short_audio.flac");
 		byte[] content = Files.readAllBytes(path);
 
 		try (SpeechClient speechClient = SpeechClient.create()) {

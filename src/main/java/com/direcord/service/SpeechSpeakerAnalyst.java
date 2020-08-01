@@ -43,7 +43,7 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 				encoding = AudioEncoding.FLAC;
 				channelCount = 2;
 			}else if(fileName.endsWith(".wav")) {
-				rateHertz = 8000;
+				rateHertz = 44100;
 				encoding = AudioEncoding.LINEAR16;
 				channelCount = 1;				
 			}

@@ -37,8 +37,9 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 					.setEnableSpeakerDiarization(true).setMinSpeakerCount(2).setMaxSpeakerCount(2).build();
 
 			// Configure request to enable Speaker diarization
-			RecognitionConfig config = RecognitionConfig.newBuilder().setEncoding(AudioEncoding.FLAC).setAudioChannelCount(2)
-					.setLanguageCode("en-US").setSampleRateHertz(44100).setDiarizationConfig(speakerDiarizationConfig)
+			int rateHertz = 8000; // flac - 44100
+			RecognitionConfig config = RecognitionConfig.newBuilder().setEncoding(AudioEncoding.LINEAR16).setAudioChannelCount(2)
+					.setLanguageCode("en-US").setSampleRateHertz(rateHertz).setDiarizationConfig(speakerDiarizationConfig)
 					.build();
 
 			// Perform the transcription request

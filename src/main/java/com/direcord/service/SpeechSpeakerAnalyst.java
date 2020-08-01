@@ -3,14 +3,18 @@ package com.direcord.service;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
+import com.google.api.gax.longrunning.OperationFuture;
+import com.google.cloud.speech.v1.LongRunningRecognizeMetadata;
+import com.google.cloud.speech.v1.LongRunningRecognizeResponse;
 import com.google.cloud.speech.v1.RecognitionAudio;
 import com.google.cloud.speech.v1.RecognitionConfig;
 import com.google.cloud.speech.v1.RecognitionConfig.AudioEncoding;
-import com.google.cloud.speech.v1.RecognizeResponse;
 import com.google.cloud.speech.v1.SpeakerDiarizationConfig;
 import com.google.cloud.speech.v1.SpeechClient;
 import com.google.cloud.speech.v1.SpeechRecognitionAlternative;
+import com.google.cloud.speech.v1.SpeechRecognitionResult;
 import com.google.cloud.speech.v1.WordInfo;
 import com.google.protobuf.ByteString;
 
@@ -28,9 +32,9 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 	/**
 	 * Transcribe the given audio file using speaker diarization.
 	 *
-	 * @param fileName the path to an audio file.
-	 * @param maxSpeakerCnt 
-	 * @param minSpeakerCnt 
+	 * @param fileName      the path to an audio file.
+	 * @param maxSpeakerCnt
+	 * @param minSpeakerCnt
 	 */
 	public String analyze(String fileName, int minSpeakerCnt, int maxSpeakerCnt) throws Exception {
 		Path path = Paths.get("./WEB-INF/classes/" + fileName);
@@ -42,13 +46,13 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 					.build();
 
 			SpeakerDiarizationConfig speakerDiarizationConfig = SpeakerDiarizationConfig.newBuilder()
-					.setEnableSpeakerDiarization(true)
-					.setMinSpeakerCount(minSpeakerCnt).setMaxSpeakerCount(maxSpeakerCnt).build();
+					.setEnableSpeakerDiarization(true).setMinSpeakerCount(minSpeakerCnt)
+					.setMaxSpeakerCount(maxSpeakerCnt).build();
 
 			// Configure request to enable Speaker diarization
 			int rateHertz = 44100; // flac - 44100, default - 8000
 			int channelCount = 2;
-			
+
 			AudioEncoding encoding = null;
 			if (fileName.endsWith(".flac")) {
 				encoding = AudioEncoding.FLAC;
@@ -60,38 +64,84 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 					.setAudioChannelCount(channelCount).setLanguageCode("en-US").setSampleRateHertz(rateHertz)
 					.setDiarizationConfig(speakerDiarizationConfig).build();
 
-			// Perform the transcription request
-			RecognizeResponse recognizeResponse = speechClient.recognize(config, recognitionAudio);
+			// Perform the transcription request 잠깐 pause
+//			RecognizeResponse recognizeResponse = speechClient.recognize(config, recognitionAudio);
 
-			// Speaker Tags are only included in the last result object, which has only one
-			// alternative.
-			SpeechRecognitionAlternative alternative = recognizeResponse
-					.getResults(recognizeResponse.getResultsCount() - 1).getAlternatives(0);
-
-			// The alternative is made up of WordInfo objects that contain the speaker_tag.
-			WordInfo wordInfo = alternative.getWords(0);
-			int currentSpeakerTag = wordInfo.getSpeakerTag();
-
-			// For each word, get all the words associated with one speaker, once the
-			// speaker changes,
-			// add a new line with the new speaker and their spoken words.
-			StringBuilder speakerWords = new StringBuilder(
-					String.format("Speaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
-
-			for (int i = 1; i < alternative.getWordsCount(); i++) {
-				wordInfo = alternative.getWords(i);
-				if (currentSpeakerTag == wordInfo.getSpeakerTag()) {
-					speakerWords.append(" ");
-					speakerWords.append(wordInfo.getWord());
-				} else {
-					speakerWords
-							.append(String.format("\nSpeaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
-					currentSpeakerTag = wordInfo.getSpeakerTag();
-				}
+			//////////////////////////////// 기존 변경 안.
+			// Use non-blocking call for getting file transcription
+			OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response = speechClient
+					.longRunningRecognizeAsync(config, recognitionAudio);
+			while (!response.isDone()) {
+				System.out.println("Waiting for response...");
+				Thread.sleep(10000);
 			}
 
-			System.out.println(speakerWords.toString());
-			return speakerWords.toString();
+			List<SpeechRecognitionResult> results = response.get().getResultsList();
+			
+			StringBuilder responseBuilder = new StringBuilder();
+			for (SpeechRecognitionResult result : results) {
+				// There can be several alternative transcripts for a given chunk of speech.
+				// Just use the
+				// first (most likely) one here.
+				SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+
+				// The alternative is made up of WordInfo objects that contain the speaker_tag.
+				WordInfo wordInfo = alternative.getWords(0);
+				int currentSpeakerTag = wordInfo.getSpeakerTag();
+
+				// For each word, get all the words associated with one speaker, once the
+				// speaker changes,
+				// add a new line with the new speaker and their spoken words.
+				StringBuilder speakerWords = new StringBuilder(
+						String.format("Speaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
+
+				for (int i = 1; i < alternative.getWordsCount(); i++) {
+					wordInfo = alternative.getWords(i);
+					if (currentSpeakerTag == wordInfo.getSpeakerTag()) {
+						speakerWords.append(" ");
+						speakerWords.append(wordInfo.getWord());
+					} else {
+						speakerWords.append(
+								String.format("\nSpeaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
+						currentSpeakerTag = wordInfo.getSpeakerTag();
+					}
+				}
+
+				System.out.println(speakerWords.toString());
+				responseBuilder.append(speakerWords.toString());
+			}
+			return responseBuilder.toString();
 		}
+		///////////////////////////
+
+		// Speaker Tags are only included in the last result object, which has only one
+		// alternative.
+//			SpeechRecognitionAlternative alternative = recognizeResponse
+//					.getResults(recognizeResponse.getResultsCount() - 1).getAlternatives(0);
+//
+//			// The alternative is made up of WordInfo objects that contain the speaker_tag.
+//			WordInfo wordInfo = alternative.getWords(0);
+//			int currentSpeakerTag = wordInfo.getSpeakerTag();
+//
+//			// For each word, get all the words associated with one speaker, once the
+//			// speaker changes,
+//			// add a new line with the new speaker and their spoken words.
+//			StringBuilder speakerWords = new StringBuilder(
+//					String.format("Speaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
+//
+//			for (int i = 1; i < alternative.getWordsCount(); i++) {
+//				wordInfo = alternative.getWords(i);
+//				if (currentSpeakerTag == wordInfo.getSpeakerTag()) {
+//					speakerWords.append(" ");
+//					speakerWords.append(wordInfo.getWord());
+//				} else {
+//					speakerWords
+//							.append(String.format("\nSpeaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
+//					currentSpeakerTag = wordInfo.getSpeakerTag();
+//				}
+//			}
+//
+//			System.out.println(speakerWords.toString());
+//			return speakerWords.toString();
 	}
 }

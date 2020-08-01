@@ -22,7 +22,7 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 	 * @param fileName the path to an audio file.
 	 */
 	public String analyze(String fileName) throws Exception {
-		Path path = Paths.get("./target/Direcord-0.0.1/WEB-INF/classes/audio.flac");
+		Path path = Paths.get("./WEB-INF/classes/audio.flac");
 		System.out.println("[path] " + path);
 		System.out.println("[resources] " + getClass().getResource("/audio.flac").getPath());
 		System.out.println("[real path] " + path.toRealPath());

@@ -37,7 +37,7 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 					.setEnableSpeakerDiarization(true).setMinSpeakerCount(2).setMaxSpeakerCount(2).build();
 
 			// Configure request to enable Speaker diarization
-			RecognitionConfig config = RecognitionConfig.newBuilder().setEncoding(AudioEncoding.LINEAR16)
+			RecognitionConfig config = RecognitionConfig.newBuilder().setEncoding(AudioEncoding.FLAC)
 					.setLanguageCode("en-US").setSampleRateHertz(8000).setDiarizationConfig(speakerDiarizationConfig)
 					.build();
 

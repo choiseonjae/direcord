@@ -44,5 +44,15 @@ public class SpeechAnalzeApi {
 			return "FAIL : " + e.getClass().getSimpleName() + " MSG : "+ e.getMessage();
 		}
 	}
+	
+	@GetMapping("/speaker/uri")
+	public String speakerUri(String gscUri, int minSpeakerCnt, int maxSpeakerCnt) {
+		try {
+			return SpeechSpeakerAnalyst.getInstance().analyzeToUri(gscUri, minSpeakerCnt, maxSpeakerCnt);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "FAIL : " + e.getClass().getSimpleName() + " MSG : "+ e.getMessage();
+		}
+	}
 
 }

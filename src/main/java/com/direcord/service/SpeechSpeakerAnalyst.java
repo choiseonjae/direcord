@@ -38,7 +38,7 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 
 			// Configure request to enable Speaker diarization
 			RecognitionConfig config = RecognitionConfig.newBuilder().setEncoding(AudioEncoding.FLAC)
-					.setLanguageCode("en-US").setSampleRateHertz(8000).setDiarizationConfig(speakerDiarizationConfig)
+					.setLanguageCode("en-US").setSampleRateHertz(44100).setDiarizationConfig(speakerDiarizationConfig)
 					.build();
 
 			// Perform the transcription request

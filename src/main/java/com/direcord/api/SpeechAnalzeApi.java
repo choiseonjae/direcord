@@ -36,9 +36,9 @@ public class SpeechAnalzeApi {
 	}
 	
 	@GetMapping("/speaker")
-	public String speaker(String fileName) {
+	public String speaker(String fileName, int minSpeakerCnt, int maxSpeakerCnt) {
 		try {
-			return SpeechSpeakerAnalyst.getInstance().analyze(fileName);
+			return SpeechSpeakerAnalyst.getInstance().analyze(fileName, minSpeakerCnt, maxSpeakerCnt);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "FAIL : " + e.getClass().getSimpleName() + " MSG : "+ e.getMessage();

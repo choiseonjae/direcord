@@ -1,27 +1,38 @@
 package com.direcord.service;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.google.cloud.speech.v1.*;
+import com.google.cloud.speech.v1.RecognitionAudio;
+import com.google.cloud.speech.v1.RecognitionConfig;
 import com.google.cloud.speech.v1.RecognitionConfig.AudioEncoding;
+import com.google.cloud.speech.v1.RecognizeResponse;
+import com.google.cloud.speech.v1.SpeakerDiarizationConfig;
+import com.google.cloud.speech.v1.SpeechClient;
+import com.google.cloud.speech.v1.SpeechRecognitionAlternative;
+import com.google.cloud.speech.v1.WordInfo;
 import com.google.protobuf.ByteString;
 
 public class SpeechSpeakerAnalyst implements SpeechAnalyst {
-	
+
 	private static SpeechSpeakerAnalyst speakerAnalyst = new SpeechSpeakerAnalyst();
-	private SpeechSpeakerAnalyst() {}
+
+	private SpeechSpeakerAnalyst() {
+	}
+
 	public static SpeechSpeakerAnalyst getInstance() {
 		return speakerAnalyst;
 	}
+
 	/**
 	 * Transcribe the given audio file using speaker diarization.
 	 *
 	 * @param fileName the path to an audio file.
+	 * @param maxSpeakerCnt 
+	 * @param minSpeakerCnt 
 	 */
-	public String analyze(String fileName) throws Exception {
+	public String analyze(String fileName, int minSpeakerCnt, int maxSpeakerCnt) throws Exception {
 		Path path = Paths.get("./WEB-INF/classes/" + fileName);
 		byte[] content = Files.readAllBytes(path);
 
@@ -31,27 +42,23 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 					.build();
 
 			SpeakerDiarizationConfig speakerDiarizationConfig = SpeakerDiarizationConfig.newBuilder()
-					.setEnableSpeakerDiarization(true).setMinSpeakerCount(2).setMaxSpeakerCount(2).build();
-			
+					.setEnableSpeakerDiarization(true)
+					.setMinSpeakerCount(minSpeakerCnt).setMaxSpeakerCount(maxSpeakerCnt).build();
+
 			// Configure request to enable Speaker diarization
-			int rateHertz = 0; // flac - 44100, default - 8000
+			int rateHertz = 44100; // flac - 44100, default - 8000
+			int channelCount = 2;
+			
 			AudioEncoding encoding = null;
-			int channelCount = 0;
-			
-			if(fileName.endsWith(".flac")) {
-				rateHertz = 44100;
+			if (fileName.endsWith(".flac")) {
 				encoding = AudioEncoding.FLAC;
-				channelCount = 2;
-			}else if(fileName.endsWith(".wav")) {
-				rateHertz = 44100;
+			} else {
 				encoding = AudioEncoding.LINEAR16;
-				channelCount = 1;				
 			}
-			
-			RecognitionConfig config = RecognitionConfig.newBuilder()
-					.setEncoding(encoding).setAudioChannelCount(channelCount)
-					.setLanguageCode("en-US").setSampleRateHertz(rateHertz).setDiarizationConfig(speakerDiarizationConfig)
-					.build();
+
+			RecognitionConfig config = RecognitionConfig.newBuilder().setEncoding(encoding)
+					.setAudioChannelCount(channelCount).setLanguageCode("en-US").setSampleRateHertz(rateHertz)
+					.setDiarizationConfig(speakerDiarizationConfig).build();
 
 			// Perform the transcription request
 			RecognizeResponse recognizeResponse = speechClient.recognize(config, recognitionAudio);

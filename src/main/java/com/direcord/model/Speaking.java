@@ -8,6 +8,14 @@ public class Speaking {
 	private StringBuilder speaking = new StringBuilder();
 	private Duration startTime;
 	private Duration endTime;
+	
+	@Override
+	public String toString() {
+		String str = "Speaker ";
+		str += index + " : ";
+		str += speaking + "(" + startTime + "~" + endTime +")";
+		return str;
+	}
 
 
 	public Speaking(int index) {

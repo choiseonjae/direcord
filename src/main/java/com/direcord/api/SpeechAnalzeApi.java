@@ -20,7 +20,8 @@ public class SpeechAnalzeApi {
 	@GetMapping("/speaker/uri")
 	public String speakerUri(String gscUri, int minSpeakerCnt, int maxSpeakerCnt) {
 		try {
-			return SpeechSpeakerAnalyst.getInstance().analyzeToUri(gscUri, minSpeakerCnt, maxSpeakerCnt).get(0).toString();
+			return "test";
+//			return SpeechSpeakerAnalyst.getInstance().analyzeToUri(gscUri, minSpeakerCnt, maxSpeakerCnt).get(0).toString();
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 		} catch (Exception e) {

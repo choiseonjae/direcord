@@ -6,8 +6,8 @@ public class Speaking {
 
 	private int index;
 	private StringBuilder speaking = new StringBuilder();
-	private Duration startTime;
-	private Duration endTime;
+	private String startTime;
+	private String endTime;
 	
 	@Override
 	public String toString() {
@@ -37,19 +37,19 @@ public class Speaking {
 		speaking.append(" ");
 	}
 
-	public Duration getStartTime() {
+	public String getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Duration duration) {
+	public void setStartTime(String duration) {
 		this.startTime = duration;
 	}
 
-	public Duration getEndTime() {
+	public String getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(Duration endTime) {
+	public void setEndTime(String endTime) {
 		this.endTime = endTime;
 	}
 

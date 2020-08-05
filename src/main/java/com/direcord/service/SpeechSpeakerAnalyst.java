@@ -177,7 +177,6 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 					.setEnableAutomaticPunctuation(isPunctuation).setEnableWordTimeOffsets(isTimeOffSet)
 					.setDiarizationConfig(speakerDiarizationConfig).build();
 
-			//////////////////////////////// 기존 변경 안.
 			// Use non-blocking call for getting file transcription
 			OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response = speechClient
 					.longRunningRecognizeAsync(config, recognitionAudio);
@@ -205,7 +204,7 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 				// 초기 Speaker
 				Speaking speaking = new Speaking(currentSpeakerTag);
 				speaking.recordTalking(wordInfo.getWord());
-				speaking.setStartTime(wordInfo.getStartTime());
+				speaking.setStartTime(wordInfo.getStartTime().getSeconds() + "." + wordInfo.getStartTime().getNanos() / 100000000);
 
 				// For each word, get all the words associated with one speaker, once the
 				// speaker changes,
@@ -220,11 +219,8 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 						speakerWords.append(wordInfo.getWord());
 						
 						speaking.recordTalking(wordInfo.getWord());
-						speaking.setEndTime(wordInfo.getEndTime());
+						speaking.setEndTime(wordInfo.getEndTime().getSeconds() + "." + wordInfo.getEndTime().getNanos() / 100000000);
 
-						System.out.printf("\t%s.%s sec - %s.%s sec\n", wordInfo.getStartTime().getSeconds(),
-								wordInfo.getStartTime().getNanos() / 100000000, wordInfo.getEndTime().getSeconds(),
-								wordInfo.getEndTime().getNanos() / 100000000);
 					} else {
 						// 추가적인 저장
 						speakingList.add(speaking);
@@ -235,7 +231,7 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 						
 						speaking = new Speaking(currentSpeakerTag);
 						speaking.recordTalking(wordInfo.getWord());
-						speaking.setStartTime(wordInfo.getStartTime());
+						speaking.setStartTime(wordInfo.getStartTime().getSeconds() + "." + wordInfo.getStartTime().getNanos() / 100000000);
 						
 					}
 

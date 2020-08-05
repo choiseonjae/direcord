@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.direcord.model.Speaking;
 import com.direcord.service.SpeechSpeakerAnalyst;
 
-@RestController("/speech")
+@RestController()
 @RequestMapping(value = "/speech")
 public class SpeechAnalzeApi {
 

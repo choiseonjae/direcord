@@ -38,8 +38,8 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 	 * @param maxSpeakerCnt
 	 * @param minSpeakerCnt
 	 */
-//	public List<Speaking> analyzeToUri(String gcsUri, int minSpeakerCnt, int maxSpeakerCnt) throws Exception {
-	public String analyzeToUri(String gcsUri, int minSpeakerCnt, int maxSpeakerCnt) throws Exception {
+	public List<Speaking> analyzeToUri(String gcsUri, int minSpeakerCnt, int maxSpeakerCnt) throws Exception {
+//	public String analyzeToUri(String gcsUri, int minSpeakerCnt, int maxSpeakerCnt) throws Exception {
 
 		try (SpeechClient speechClient = SpeechClient.create()) {
 			// Get the contents of the local audio file
@@ -89,16 +89,14 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 				// 초기 Speaker
 				Speaking speaking = new Speaking(currentSpeakerTag);
 				speaking.recordTalking(wordInfo.getWord());
-				speaking.setStartTime(
-						wordInfo.getStartTime().getSeconds() + "." + wordInfo.getStartTime().getNanos() / 100000000);
-				speaking.setEndTime(
-						wordInfo.getEndTime().getSeconds() + "." + wordInfo.getEndTime().getNanos() / 100000000);
+				speaking.setStartTime(wordInfo.getStartTime().getSeconds() + "." + wordInfo.getStartTime().getNanos() / 100000000);
+				speaking.setEndTime(wordInfo.getEndTime().getSeconds() + "." + wordInfo.getEndTime().getNanos() / 100000000);
+				speakingList.add(speaking);
 
 				// For each word, get all the words associated with one speaker, once the
 				// speaker changes,
 				// add a new line with the new speaker and their spoken words.
-				StringBuilder speakerWords = new StringBuilder(
-						String.format("Speaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
+				StringBuilder speakerWords = new StringBuilder(String.format("Speaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
 
 				for (int i = 1; i < alternative.getWordsCount(); i++) {
 					wordInfo = alternative.getWords(i);
@@ -107,29 +105,28 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 						speakerWords.append(wordInfo.getWord());
 
 						speaking.recordTalking(wordInfo.getWord());
-						speaking.setEndTime(wordInfo.getEndTime().getSeconds() + "."
-								+ wordInfo.getEndTime().getNanos() / 100000000);
+						speaking.setEndTime(wordInfo.getEndTime().getSeconds() + "." + wordInfo.getEndTime().getNanos() / 100000000);
 
 					} else {
 						// 추가적인 저장
-						speakerWords.append(
-								String.format("\nSpeaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
+						speakerWords.append(String.format("\nSpeaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
 						currentSpeakerTag = wordInfo.getSpeakerTag();
 
 						speaking = new Speaking(currentSpeakerTag);
 						speaking.recordTalking(wordInfo.getWord());
-						speaking.setStartTime(wordInfo.getStartTime().getSeconds() + "."
-								+ wordInfo.getStartTime().getNanos() / 100000000);
+						speaking.setStartTime(wordInfo.getStartTime().getSeconds() + "." + wordInfo.getStartTime().getNanos() / 100000000);
+						speaking.setEndTime(wordInfo.getEndTime().getSeconds() + "." + wordInfo.getEndTime().getNanos() / 100000000);
 						speakingList.add(speaking);
 
 					}
 
 				}
 
-				System.out.println(speakerWords.toString());
+//				System.out.println(speakerWords.toString());
 				responseBuilder.append(speakerWords.toString());
 			}
-			return responseBuilder.toString();
+//			return responseBuilder.toString();
+			return speakingList;
 		}
 	}
 

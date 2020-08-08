@@ -2,10 +2,10 @@ package com.direcord.api;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,13 +16,16 @@ import com.direcord.service.SpeechSpeakerAnalyst;
 @RequestMapping(value = "/speech")
 public class SpeechAnalzeApi {
 
-	private static final Logger logger = LoggerFactory.getLogger(SpeechAnalzeApi.class);
-  
-	@GetMapping(path = "/speaker/upload", consumes = "multipart/form-data")
-	public String upload(MultipartFile uploadfile) {
-		System.out.println(uploadfile.getName() + " : " + uploadfile.getSize());
-//		System.out.println(objectName);
-//			Uploader.uploadObject(objectName, filePath);
+	@GetMapping("/speaker/upload")
+	public String upload() {
+		return "얍";
+	}
+
+	@PostMapping("/speaker/upload")
+	public String upload(@RequestParam("file") MultipartFile file) {
+		System.out.println(file.getName() + " : " + file.getSize());
+//			System.out.println(objectName);
+//				Uploader.uploadObject(objectName, filePath);
 		return "얍";
 	}
 

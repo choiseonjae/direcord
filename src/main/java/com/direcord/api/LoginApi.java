@@ -16,11 +16,15 @@ public class LoginApi {
 	public boolean isLogin(String idToken) {
 		System.out.println("도달 완료.");
 		try {
+			System.out.println("도달 완료..");
 			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+			System.out.println("도달 완료...");
 			String uid = decodedToken.getUid();
+			System.out.println("도달 완료...");
 			System.out.println("[uid] " + uid);
 			return true;
 		} catch (FirebaseAuthException e) {
+			System.out.println("도달 완료 error");
 			e.printStackTrace();
 			return false;
 		}

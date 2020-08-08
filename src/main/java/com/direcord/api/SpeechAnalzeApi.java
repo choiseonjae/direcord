@@ -5,9 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,10 +18,10 @@ public class SpeechAnalzeApi {
 
 	private static final Logger logger = LoggerFactory.getLogger(SpeechAnalzeApi.class);
   
-	@PostMapping(path = "/speaker/upload", consumes = "multipart/form-data")
-	public String upload(String objectName, MultipartFile uploadfile) {
+	@GetMapping(path = "/speaker/upload", consumes = "multipart/form-data")
+	public String upload(MultipartFile uploadfile) {
 		System.out.println(uploadfile.getName() + " : " + uploadfile.getSize());
-		System.out.println(objectName);
+//		System.out.println(objectName);
 //			Uploader.uploadObject(objectName, filePath);
 		return "얍";
 	}

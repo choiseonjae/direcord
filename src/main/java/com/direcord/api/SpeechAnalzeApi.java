@@ -18,7 +18,7 @@ public class SpeechAnalzeApi {
 
 	private static final Logger logger = LoggerFactory.getLogger(SpeechAnalzeApi.class);
 
-	@GetMapping("/speaker/uri")
+	@GetMapping("/speaker/upload")
 	public String upload(String objectName, String filePath) {
 //	public String speakerUri(String gscUri, int minSpeakerCnt, int maxSpeakerCnt) {
 		try {

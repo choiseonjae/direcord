@@ -21,7 +21,7 @@ public class SpeechAnalzeApi {
 	private static final Logger logger = LoggerFactory.getLogger(SpeechAnalzeApi.class);
   
 	@PostMapping(path = "/speaker/upload", consumes = "multipart/form-data")
-	public String upload(String objectName, @RequestParam("file") MultipartFile uploadfile) {
+	public String upload(String objectName, MultipartFile uploadfile) {
 		System.out.println(uploadfile.getName() + " : " + uploadfile.getSize());
 		System.out.println(objectName);
 //			Uploader.uploadObject(objectName, filePath);

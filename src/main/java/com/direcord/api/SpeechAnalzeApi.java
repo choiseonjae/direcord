@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.direcord.model.Speaking;
 import com.direcord.service.SpeechSpeakerAnalyst;
+import com.direcord.service.Uploader;
 
 @RestController()
 @RequestMapping(value = "/speech")
@@ -18,17 +19,24 @@ public class SpeechAnalzeApi {
 	private static final Logger logger = LoggerFactory.getLogger(SpeechAnalzeApi.class);
 
 	@GetMapping("/speaker/uri")
+	public String upload(String objectName, String filePath) {
+//	public String speakerUri(String gscUri, int minSpeakerCnt, int maxSpeakerCnt) {
+		try {
+			Uploader.uploadObject(objectName, filePath);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "얍";
+	}
+
+	@GetMapping("/speaker/uri")
 	public List<Speaking> speakerUri(String gscUri, int minSpeakerCnt, int maxSpeakerCnt) {
 //	public String speakerUri(String gscUri, int minSpeakerCnt, int maxSpeakerCnt) {
 		try {
 			List<Speaking> list = SpeechSpeakerAnalyst.getInstance().analyzeToUri(gscUri, minSpeakerCnt, maxSpeakerCnt);
 			return list;
-//			return SpeechSpeakerAnalyst.getInstance().analyzeToUri(gscUri, minSpeakerCnt, maxSpeakerCnt);
-//			String str = "";
-//			for(Speaking speaking : list) {
-//				str += speaking.toString();
-//			}
-//			return str;
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 		} catch (Exception e) {

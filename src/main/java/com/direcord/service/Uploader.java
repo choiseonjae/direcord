@@ -10,8 +10,10 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 
 public class Uploader {
-	public static void uploadObject(String projectId, String bucketName, String objectName, String filePath)
+	public static void uploadObject(String objectName, String filePath)
+//	public static void uploadObject(String projectId, String bucketName, String objectName, String filePath)
 			throws IOException {
+		
 		// The ID of your GCP project
 		// String projectId = "your-project-id";
 
@@ -23,11 +25,17 @@ public class Uploader {
 
 		// The path to your file to upload
 		// String filePath = "path/to/your/file"
-
+		
+		String bucketName = "direcord-283711.appspot.com";
 		BlobId blobId = BlobId.of(bucketName, objectName);
-		Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+		Storage storage = StorageOptions.newBuilder().setProjectId("direcord-283711").build().getService();
 		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 		storage.create(blobInfo, Files.readAllBytes(Paths.get(filePath)));
+
+//		BlobId blobId = BlobId.of(bucketName, objectName);
+//		Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+//		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+//		storage.create(blobInfo, Files.readAllBytes(Paths.get(filePath)));
 
 		System.out.println("File " + filePath + " uploaded to bucket " + bucketName + " as " + objectName);
 	}

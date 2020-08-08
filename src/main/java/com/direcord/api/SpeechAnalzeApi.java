@@ -6,11 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.direcord.model.Speaking;
 import com.direcord.service.SpeechSpeakerAnalyst;
-import com.direcord.service.Uploader;
 
 @RestController()
 @RequestMapping(value = "/speech")
@@ -19,15 +20,10 @@ public class SpeechAnalzeApi {
 	private static final Logger logger = LoggerFactory.getLogger(SpeechAnalzeApi.class);
 
 	@GetMapping("/speaker/upload")
-	public String upload(String objectName, String filePath) {
-//	public String speakerUri(String gscUri, int minSpeakerCnt, int maxSpeakerCnt) {
-		try {
-			Uploader.uploadObject(objectName, filePath);
-		} catch (RuntimeException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public String upload(String objectName, @RequestParam("file") MultipartFile uploadfile) {
+		System.out.println(uploadfile.getName() + " : " + uploadfile.getSize());
+		System.out.println(objectName);
+//			Uploader.uploadObject(objectName, filePath);
 		return "얍";
 	}
 

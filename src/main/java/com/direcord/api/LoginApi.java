@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 
 @RestController()
@@ -16,6 +16,7 @@ public class LoginApi {
 	public boolean isLogin(String idToken) {
 		System.out.println("도달 완료.");
 		try {
+			FirebaseApp.initializeApp();
 			System.out.println("도달 완료..");
 			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
 			System.out.println("도달 완료...");

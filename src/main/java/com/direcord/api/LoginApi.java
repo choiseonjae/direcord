@@ -23,7 +23,7 @@ public class LoginApi {
 			System.out.println("도달 완료...");
 			System.out.println("[uid] " + uid);
 			return true;
-		} catch (FirebaseAuthException e) {
+		} catch (Throwable e) {
 			System.out.println("도달 완료 error");
 			e.printStackTrace();
 			return false;

@@ -11,8 +11,10 @@ import com.google.firebase.auth.FirebaseToken;
 @RestController()
 @RequestMapping(value = "/login")
 public class LoginApi {
-	@GetMapping("/check/login")
+	
+	@GetMapping("/check")
 	public boolean isLogin(String idToken) {
+		System.out.println("도달 완료.");
 		try {
 			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
 			String uid = decodedToken.getUid();

@@ -205,12 +205,12 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 				Speaking speaking = new Speaking(currentSpeakerTag);
 				speaking.recordTalking(wordInfo.getWord());
 				speaking.setStartTime(wordInfo.getStartTime().getSeconds() + "." + wordInfo.getStartTime().getNanos() / 100000000);
+				speaking.setEndTime(wordInfo.getEndTime().getSeconds() + "." + wordInfo.getEndTime().getNanos() / 100000000);
 
 				// For each word, get all the words associated with one speaker, once the
 				// speaker changes,
 				// add a new line with the new speaker and their spoken words.
-				StringBuilder speakerWords = new StringBuilder(
-						String.format("Speaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
+				StringBuilder speakerWords = new StringBuilder(String.format("Speaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
 
 				for (int i = 1; i < alternative.getWordsCount(); i++) {
 					wordInfo = alternative.getWords(i);
@@ -223,15 +223,13 @@ public class SpeechSpeakerAnalyst implements SpeechAnalyst {
 
 					} else {
 						// 추가적인 저장
-						speakingList.add(speaking);
-						
-						speakerWords.append(
-								String.format("\nSpeaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
+						speakerWords.append(String.format("\nSpeaker %d: %s", wordInfo.getSpeakerTag(), wordInfo.getWord()));
 						currentSpeakerTag = wordInfo.getSpeakerTag();
 						
 						speaking = new Speaking(currentSpeakerTag);
 						speaking.recordTalking(wordInfo.getWord());
 						speaking.setStartTime(wordInfo.getStartTime().getSeconds() + "." + wordInfo.getStartTime().getNanos() / 100000000);
+						speakingList.add(speaking);
 						
 					}
 

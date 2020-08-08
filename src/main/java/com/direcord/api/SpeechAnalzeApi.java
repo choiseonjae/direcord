@@ -18,14 +18,15 @@ public class SpeechAnalzeApi {
 	private static final Logger logger = LoggerFactory.getLogger(SpeechAnalzeApi.class);
 
 	@GetMapping("/speaker/uri")
-	public String speakerUri(String gscUri, int minSpeakerCnt, int maxSpeakerCnt) {
+	public List<Speaking> speakerUri(String gscUri, int minSpeakerCnt, int maxSpeakerCnt) {
 		try {
 			List<Speaking> list = SpeechSpeakerAnalyst.getInstance().analyzeToUri(gscUri, minSpeakerCnt, maxSpeakerCnt);
-			String str = "";
-			for(Speaking speaking : list) {
-				str += speaking.toString();
-			}
-			return str;
+			return list;
+//			String str = "";
+//			for(Speaking speaking : list) {
+//				str += speaking.toString();
+//			}
+//			return str;
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 		} catch (Exception e) {

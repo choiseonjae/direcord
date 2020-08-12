@@ -66,7 +66,7 @@ public class LoginApi {
 			    }
 			             
 			}else{
-				FileInputStream serviceAccount = new FileInputStream("/home/creativenotist/client_secret_834479457088-bagsim54k9blbl7tldot6h8l27vqjnv5.apps.googleusercontent.com.json");
+				FileInputStream serviceAccount = new FileInputStream("/home/creativenotist/direcord-283711-336173eb2688.json");
 			    FirebaseOptions options = new FirebaseOptions.Builder()
 			        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
 			        .setDatabaseUrl("https://direcord-283711.firebaseio.com")

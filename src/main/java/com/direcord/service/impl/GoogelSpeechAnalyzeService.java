@@ -32,8 +32,8 @@ public class GoogelSpeechAnalyzeService implements SpeechAnalyzeService {
 	@Override
 	public List<Speaking> analyze(String uri, int minSpeakerCnt, int maxSpeakerCnt) throws Exception {
 		try (SpeechClient speechClient = SpeechClient.create()) {
-//			String baseUri = "gs://direcord-283711.appspot.com/";
-//			uri = baseUri + uri;
+			String baseUri = "gs://direcord-283711.appspot.com/";
+			uri = baseUri + uri;
 			
 			// Get the contents of the local audio file
 			RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder().setUri(uri).build();

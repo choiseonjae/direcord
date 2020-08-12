@@ -45,7 +45,7 @@ public class LoginApi {
 		}
 	}
 
-	@GetMapping("/login/{idToken}")
+	@GetMapping("/{idToken}")
 	public boolean login(@PathVariable("idToken") String idToken) {
 		try {
 			FirebaseApp.initializeApp();

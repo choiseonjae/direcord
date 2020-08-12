@@ -32,6 +32,9 @@ public class GoogelSpeechAnalyzeService implements SpeechAnalyzeService {
 	@Override
 	public List<Speaking> analyze(String uri, int minSpeakerCnt, int maxSpeakerCnt) throws Exception {
 		try (SpeechClient speechClient = SpeechClient.create()) {
+			String baseUri = "gs://notist-45754.appspot.com/";
+			uri = baseUri + uri;
+			
 			// Get the contents of the local audio file
 			RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder().setUri(uri).build();
 
@@ -43,7 +46,7 @@ public class GoogelSpeechAnalyzeService implements SpeechAnalyzeService {
 			int rateHertz = 44100; // flac - 44100, default - 8000
 			int channelCount = 2;
 			String language = "en-US";
-			AudioEncoding encoding = AudioEncoding.FLAC;
+			AudioEncoding encoding = AudioEncoding.LINEAR16;
 			boolean isPunctuation = true; // 구두점(!, ?, . 등)을 자동으로 삽입한다.
 			boolean isTimeOffSet = true;
 

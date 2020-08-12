@@ -50,7 +50,8 @@ public class GoogelSpeechAnalyzeService implements SpeechAnalyzeService {
 			boolean isPunctuation = true; // 구두점(!, ?, . 등)을 자동으로 삽입한다.
 			boolean isTimeOffSet = true;
 
-			RecognitionConfig config = RecognitionConfig.newBuilder().setEncoding(encoding)
+			RecognitionConfig config = RecognitionConfig.newBuilder()
+//					.setEncoding(encoding)
 					.setAudioChannelCount(channelCount).setLanguageCode(language).setSampleRateHertz(rateHertz)
 					.setEnableAutomaticPunctuation(isPunctuation).setEnableWordTimeOffsets(isTimeOffSet)
 					.setDiarizationConfig(speakerDiarizationConfig).build();

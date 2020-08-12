@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class Speaking {
+public class Speaking extends DefaultResponse{
 
 	private int index;
 	private StringBuilder speaking = new StringBuilder();

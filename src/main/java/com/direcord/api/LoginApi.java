@@ -66,10 +66,11 @@ public class LoginApi {
 			    }
 			             
 			}else{
-				FileInputStream serviceAccount = new FileInputStream("/home/creativenotist/direcord-283711-336173eb2688.json");
+				FileInputStream serviceAccount = new FileInputStream("/home/creativenotist/google-services.json");
 			    FirebaseOptions options = new FirebaseOptions.Builder()
 			        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
 			        .setDatabaseUrl("https://direcord-283711.firebaseio.com")
+			        .setProjectId("direcord-283711")
 			        .build();
 			    firebaseApp = FirebaseApp.initializeApp(options);              
 			}

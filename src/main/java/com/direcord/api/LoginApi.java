@@ -1,5 +1,8 @@
 package com.direcord.api;
 
+import java.io.FileInputStream;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.direcord.service.LoginService;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 
@@ -48,7 +53,28 @@ public class LoginApi {
 	@GetMapping("/{idToken}")
 	public boolean login(@PathVariable("idToken") String idToken) {
 		try {
-			FirebaseApp.initializeApp();
+
+			FirebaseApp firebaseApp = null;
+			List<FirebaseApp> firebaseApps = FirebaseApp.getApps();
+			 
+			if(firebaseApps != null && !firebaseApps.isEmpty()){
+			             
+			    for(FirebaseApp app : firebaseApps){
+			        if(app.getName().equals(FirebaseApp.DEFAULT_APP_NAME)) {
+			            firebaseApp = app;
+			        }
+			    }
+			             
+			}else{
+				FileInputStream serviceAccount = new FileInputStream("/home/creativenotist/direcord-283711-336173eb2688.json");
+			    FirebaseOptions options = new FirebaseOptions.Builder()
+			        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+			        .setDatabaseUrl("https://direcord-283711.firebaseio.com")
+			        .build();
+			    firebaseApp = FirebaseApp.initializeApp(options);              
+			}
+
+
 			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
 			String uid = decodedToken.getUid();
 			System.out.println("[uid] " + uid);

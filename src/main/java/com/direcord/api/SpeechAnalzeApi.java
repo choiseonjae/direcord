@@ -22,12 +22,22 @@ public class SpeechAnalzeApi {
 	@Autowired
 	private LoginService loginService;
 
-	@GetMapping(path = "/analysis/{idToken}/{uri}")
-	public List<Speaking> analyze(@PathVariable("idToken") String idToken, @PathVariable("uri") String uri, int minSpeakerCnt, int maxSpeakerCnt) {
+//	@GetMapping(path = "/analysis/{idToken}/{uri}")
+//	public List<Speaking> analyze(@PathVariable("idToken") String idToken, @PathVariable("uri") String uri, int minSpeakerCnt, int maxSpeakerCnt) {
+//		try {
+//			// TODO 현재는 해당 위치에서 token 유효성 검사를 진행. 추후에 AOP로 뺄 것
+//			loginService.checkCancelToken(idToken);
+//			
+//			return speechAnalyzeService.analyze(uri, minSpeakerCnt, maxSpeakerCnt);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
+	
+	@GetMapping(path = "/analysis/{uri}")
+	public List<Speaking> analyze(@PathVariable("uri") String uri, int minSpeakerCnt, int maxSpeakerCnt) {
 		try {
-			// TODO 현재는 해당 위치에서 token 유효성 검사를 진행. 추후에 AOP로 뺄 것
-			loginService.checkCancelToken(idToken);
-			
 			return speechAnalyzeService.analyze(uri, minSpeakerCnt, maxSpeakerCnt);
 		} catch (Exception e) {
 			e.printStackTrace();

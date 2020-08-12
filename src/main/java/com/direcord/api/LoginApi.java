@@ -18,7 +18,7 @@ public class LoginApi {
 	@Autowired
 	private LoginService loginService;
 
-	@GetMapping
+	@GetMapping("/logout/{idToken}")
 	// TODO returnCode, returnMsg 생성 부분 AOP 로 뺴기
 	public boolean logout(String idToken) {
 		try {

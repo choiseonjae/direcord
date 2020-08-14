@@ -38,6 +38,7 @@ public class SpeechAnalzeApi {
 	@GetMapping(path = "/analysis/{uri}")
 	public List<Speaking> analyze(@PathVariable("uri") String uri, int minSpeakerCnt, int maxSpeakerCnt, String language) {
 		try {
+			System.out.println("!!!!!!!!!!1");
 			return speechAnalyzeService.analyze(uri, minSpeakerCnt, maxSpeakerCnt, language);
 		} catch (Exception e) {
 			e.printStackTrace();

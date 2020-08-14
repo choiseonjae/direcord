@@ -34,6 +34,7 @@ public class GoogelSpeechAnalyzeService implements SpeechAnalyzeService {
 			String baseUri = "gs://direcord-283711.appspot.com/";
 			uri = baseUri + uri;
 
+			System.out.println(uri);
 			// Get the contents of the local audio file
 			RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder().setUri(uri).build();
 

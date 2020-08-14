@@ -12,7 +12,6 @@ import com.google.cloud.speech.v1.LongRunningRecognizeMetadata;
 import com.google.cloud.speech.v1.LongRunningRecognizeResponse;
 import com.google.cloud.speech.v1.RecognitionAudio;
 import com.google.cloud.speech.v1.RecognitionConfig;
-import com.google.cloud.speech.v1.RecognitionConfig.AudioEncoding;
 import com.google.cloud.speech.v1.SpeakerDiarizationConfig;
 import com.google.cloud.speech.v1.SpeechClient;
 import com.google.cloud.speech.v1.SpeechRecognitionAlternative;
@@ -30,11 +29,11 @@ public class GoogelSpeechAnalyzeService implements SpeechAnalyzeService {
 	 * @param 최대      화자 수
 	 */
 	@Override
-	public List<Speaking> analyze(String uri, int minSpeakerCnt, int maxSpeakerCnt) throws Exception {
+	public List<Speaking> analyze(String uri, int minSpeakerCnt, int maxSpeakerCnt, String language) throws Exception {
 		try (SpeechClient speechClient = SpeechClient.create()) {
 			String baseUri = "gs://direcord-283711.appspot.com/";
 			uri = baseUri + uri;
-			
+
 			// Get the contents of the local audio file
 			RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder().setUri(uri).build();
 
@@ -45,8 +44,8 @@ public class GoogelSpeechAnalyzeService implements SpeechAnalyzeService {
 			// Configure request to enable Speaker diarization
 			int rateHertz = 44100; // flac - 44100, default - 8000
 			int channelCount = 2;
-			String language = "en-US";
-			AudioEncoding encoding = AudioEncoding.LINEAR16;
+//			String language = "ko-KR"; // en-US / ko-KR
+//			AudioEncoding encoding = AudioEncoding.LINEAR16;
 			boolean isPunctuation = true; // 구두점(!, ?, . 등)을 자동으로 삽입한다.
 			boolean isTimeOffSet = true;
 

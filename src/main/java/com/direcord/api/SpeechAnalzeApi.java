@@ -36,9 +36,9 @@ public class SpeechAnalzeApi {
 //	}
 	
 	@GetMapping(path = "/analysis/{uri}")
-	public List<Speaking> analyze(@PathVariable("uri") String uri, int minSpeakerCnt, int maxSpeakerCnt) {
+	public List<Speaking> analyze(@PathVariable("uri") String uri, int minSpeakerCnt, int maxSpeakerCnt, String language) {
 		try {
-			return speechAnalyzeService.analyze(uri, minSpeakerCnt, maxSpeakerCnt);
+			return speechAnalyzeService.analyze(uri, minSpeakerCnt, maxSpeakerCnt, language);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

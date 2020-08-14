@@ -6,6 +6,6 @@ import com.direcord.model.Speaking;
 
 public interface SpeechAnalyzeService {
 	
-	public List<Speaking> analyze(String uri, int minSpeakerCnt, int maxSpeakerCnt) throws Exception;
+	List<Speaking> analyze(String uri, int minSpeakerCnt, int maxSpeakerCnt, String language) throws Exception;
 
 }
